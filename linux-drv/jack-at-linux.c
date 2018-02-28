@@ -1,6 +1,6 @@
 /* 
- * Minimal "driver" to make all sort of AT switches work on a desktop computer
- * via audio jack's P2 3.5mm connector as a simple 'mouse click'. No USB or
+ * A minimal "driver" to make all sort of AT switches work on a desktop computer
+ * via audio jack's P2, 3.5mm connector as a simple 'mouse click'. No USB or
  * additional mouse device is needed, just the switch :)
  *  
  * Authors: Feb, 2018. Federal University of Pará (UFPA). Belém, Brazil.
@@ -12,7 +12,11 @@
  * Mouse with X11/Xlib: Enrico "Pioz" (https://gist.github.com/pioz/726474)
  *
  * Compile: $ make
- * gcc -o jack-at-deskdriver mouse_x11.c rec_alsa.c main.c -lX11 -lasound 
+ * gcc -o jack-at-linux mouse_x11.c rec_alsa.c main.c -lX11 -lasound 
+ *
+ * Dependences: $ sudo apt-get install libasound2-dev libx11-dev
+ * XLib (X11) 
+ * ALSA headers
  *
  */
 
@@ -52,13 +56,13 @@ main(int argc, char *argv[])
 	fprintf(stdout, MAIN_TAG "to gravando\n");
 	int count_block_event = 0;
 	while(keep_running) {
-		if(rec_alsa_get_event_prob(&mic_params) >= 25) {
+		if(rec_alsa_get_event_prob(&mic_params) >= 55) {
 			count_block_event++;
 		} else {
 			count_block_event = 0;
 		}
 
-		if(count_block_event > 5) {
+		if(count_block_event > 20) {
 			mouse_click(disp, Button1);
 			count_block_event = 0;
 		}

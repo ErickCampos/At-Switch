@@ -1,14 +1,22 @@
-/* Written by Pioz.
- * Compile with: gcc -o autoclick autoclick.c -lX11
- * source: https://gist.github.com/pioz/726474 
+/*
+ * A minimal "driver" to make all sort of AT switches work on a desktop computer
+ * via audio jack's P2, 3.5mm connector as a simple 'mouse click'. No USB or
+ * additional mouse device is needed, just the switch :)
+ *  
+ * Authors: Feb, 2018. Federal University of Pará (UFPA). Belém, Brazil.
+ * Cassio Batista - cassio.batista.13@gmail.com
+ * Erick Campos - erick.c.modesto@gmail.com
+ * 
+ * Credits:
+ * ALSA Capture Program: Paul David (http://equalarea.com/paul/alsa-audio.html)
+ * Mouse with X11/Xlib: Enrico "Pioz" (https://gist.github.com/pioz/726474)
  *
- * Cassio Batista - casio.batista.13@gmail.com
- * Federal University of Pará (UFPA). Belém, Brazil.
+ * Source: Enrico "Pioz"'s gist (https://gist.github.com/pioz/726474)
+ *
  */
 
 #include "mouse_x11.h"
 
-/* simulate mouse click */
 void
 mouse_click(Display *display, int button)
 {
@@ -47,7 +55,6 @@ mouse_click(Display *display, int button)
 	printf("#####################cliquei valeu\n");
 }
 
-/* get mouse coordinates */
 void
 mouse_get_coords(Display *display, int *x, int *y)
 {
@@ -62,7 +69,6 @@ mouse_get_coords(Display *display, int *x, int *y)
 	*y = event.xbutton.y;
 }
 
-/* move mouse pointer (relative) */
 void
 mouse_move(Display *display, int x, int y)
 {
@@ -75,7 +81,6 @@ mouse_move(Display *display, int x, int y)
 	usleep(1);
 }
 
-/* move mouse pointer (absolute) */
 void
 mouse_move_to(Display *display, int x, int y)
 {

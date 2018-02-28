@@ -1,14 +1,18 @@
 /* 
- * A Minimal Capture Program
- * This program opens an audio interface for capture, configures it for
- * stereo, 16 bit, 44.1kHz, interleaved conventional read/write
- * access. Then its reads a chunk of random data from it, and exits. It
- * isn't meant to be a real program.
- * From on Paul David's tutorial : http://equalarea.com/paul/alsa-audio.html
- * Fixes rate and buffer problems
+ * A minimal "driver" to make all sort of AT switches work on a desktop computer
+ * via audio jack's P2, 3.5mm connector as a simple 'mouse click'. No USB or
+ * additional mouse device is needed, just the switch :)
+ *  
+ * Authors: Feb, 2018. Federal University of Pará (UFPA). Belém, Brazil.
+ * Cassio Batista - cassio.batista.13@gmail.com
+ * Erick Campos - erick.c.modesto@gmail.com
+ * 
+ * Credits:
+ * ALSA Capture Program: Paul David (http://equalarea.com/paul/alsa-audio.html)
+ * Mouse with X11/Xlib: Enrico "Pioz" (https://gist.github.com/pioz/726474)
  *
- * sudo apt-get install libasound2-dev
- * gcc -o alsa-record-example -lasound alsa-record-example.c && ./alsa-record-example hw:0
+ * Source: Alban Peignier' gist (https://gist.github.com/albanpeignier/104902)
+ *
  */
 
 #include "rec_alsa.h"
@@ -159,6 +163,7 @@ rec_alsa_get_event_prob(rec_alsa_t* params)
 	/* FIXME: check endianness */
 	for(j=0; j<params->buf_size; j+=2) {
 		sample = (((short)params->buffer[j+1])<<8) | (short)params->buffer[j];
+		printf("%d\n", sample);
 		if(sample < -REC_ALSA_EVENT_THRESH || sample > REC_ALSA_EVENT_THRESH) {
 			p += 1.0;
 		}
