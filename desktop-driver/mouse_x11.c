@@ -12,10 +12,11 @@
 void
 mouse_click(Display *display, int button)
 {
-	// create and setting up the event
+	/* create the event */
 	XEvent event;
 	memset(&event, 0, sizeof(event));
 
+	/* setting the event parameters up */
 	event.xbutton.button = button;
 	event.xbutton.same_screen = True;
 	event.xbutton.subwindow = DefaultRootWindow(display);
@@ -42,6 +43,8 @@ mouse_click(Display *display, int button)
 		fprintf(stderr, "Error to send the event!\n");
 	XFlush(display);
 	usleep(1);
+
+	printf("#####################cliquei valeu\n");
 }
 
 /* get mouse coordinates */
@@ -54,11 +57,12 @@ mouse_get_coords(Display *display, int *x, int *y)
 			&event.xbutton.x_root, &event.xbutton.y_root,
 			&event.xbutton.x, &event.xbutton.y,
 			&event.xbutton.state);
+
 	*x = event.xbutton.x;
 	*y = event.xbutton.y;
 }
 
-/* move mouse pointer(relative) */
+/* move mouse pointer (relative) */
 void
 mouse_move(Display *display, int x, int y)
 {
@@ -71,7 +75,7 @@ mouse_move(Display *display, int x, int y)
 	usleep(1);
 }
 
-/* move mouse pointer(absolute) */
+/* move mouse pointer (absolute) */
 void
 mouse_move_to(Display *display, int x, int y)
 {
