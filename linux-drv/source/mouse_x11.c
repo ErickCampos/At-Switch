@@ -20,6 +20,9 @@
 void
 mouse_click(Display *display, int button)
 {
+	#if MOUSE_X11_DEGUB
+		fprintf(stdout, MOUSE_X11_TAG "creating mouse click event\n");
+	#endif
 	/* create the event */
 	XEvent event;
 	memset(&event, 0, sizeof(event));
@@ -29,6 +32,9 @@ mouse_click(Display *display, int button)
 	event.xbutton.same_screen = True;
 	event.xbutton.subwindow = DefaultRootWindow(display);
 
+	#if MOUSE_X11_DEGUB
+		fprintf(stdout, MOUSE_X11_TAG "querying pointer to subwindows\n");
+	#endif
 	while(event.xbutton.subwindow) {
 		event.xbutton.window = event.xbutton.subwindow;
 		XQueryPointer(display, event.xbutton.window,
@@ -38,6 +44,9 @@ mouse_click(Display *display, int button)
 				&event.xbutton.state);
 	}
 
+	#if MOUSE_X11_DEGUB
+		fprintf(stdout, MOUSE_X11_TAG "sending the 'press' event\n");
+	#endif
 	/* press */
 	event.type = ButtonPress;
 	if(XSendEvent(display, PointerWindow, True, ButtonPressMask, &event) == 0)
@@ -45,14 +54,15 @@ mouse_click(Display *display, int button)
 	XFlush(display);
 	usleep(1);
 
+	#if MOUSE_X11_DEGUB
+		fprintf(stdout, MOUSE_X11_TAG "sending the 'release' event\n");
+	#endif
 	/* release */
 	event.type = ButtonRelease;
 	if(XSendEvent(display, PointerWindow, True, ButtonReleaseMask, &event) == 0)
 		fprintf(stderr, "Error to send the event!\n");
 	XFlush(display);
 	usleep(1);
-
-	printf("#####################cliquei valeu\n");
 }
 
 void

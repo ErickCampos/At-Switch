@@ -18,6 +18,7 @@
 #ifndef _MOUSE_X11_
 #define _MOUSE_X11_
 
+#define MOUSE_X11_TAG   "[X11] "
 #define MOUSE_X11_DEGUB 0
 
 #include <stdio.h>
