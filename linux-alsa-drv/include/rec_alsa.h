@@ -49,6 +49,6 @@ typedef struct {
 
 void rec_alsa_create(rec_alsa_t* params);
 void rec_alsa_destroy(rec_alsa_t* params);
-float get_event_prob(rec_alsa_t* params);
+int rec_alsa_get_event_prob(rec_alsa_t* params);
 
 #endif /* _REC_ALSA_ */
