@@ -10,6 +10,8 @@ main(void)
 
 	/* TODO appply main routine here */
 	while((err = Pa_IsStreamActive(stream)) == 1) {
+		//printf("%d\n", data.recordedSamples[data.frameIndex+i]);
+		//fflush(stdout);
 		Pa_Sleep(1000); /* ms */
 	}
 

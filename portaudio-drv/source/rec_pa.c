@@ -38,6 +38,51 @@
 
 #include "rec_pa.h"
 
+/* This routine will be called by the PortAudio engine when audio is needed.
+ * It may be called at interrupt level on some machines so don't do anything
+ * that could mess up the system like calling malloc() or free().
+ */
+static int
+recordCallback(
+		const void *inputBuffer, void *outputBuffer,
+		unsigned long framesPerBuffer,
+		const PaStreamCallbackTimeInfo* timeInfo,
+		PaStreamCallbackFlags statusFlags,
+		void *userData)
+{
+	paTestData *data = (paTestData*)userData;
+	const SAMPLE *rptr = (const SAMPLE*)inputBuffer;
+	SAMPLE *wptr = &data->recordedSamples[data->frameIndex * NUM_CHANNELS];
+	long framesToCalc;
+	long i;
+	int finished;
+	unsigned long framesLeft = data->maxFrameIndex - data->frameIndex;
+
+	if(framesLeft < framesPerBuffer) {
+		framesToCalc = framesLeft;
+		finished = paComplete;
+	} else {
+		framesToCalc = framesPerBuffer;
+		finished = paContinue;
+	}
+
+	if(inputBuffer == NULL) {
+		for(i=0; i<framesToCalc; i++) {
+			*wptr++ = SAMPLE_SILENCE;     /* left */
+			if(NUM_CHANNELS == 2)
+				*wptr++ = SAMPLE_SILENCE; /* right */
+		}
+	} else {
+		for(i=0; i<framesToCalc; i++) {
+			*wptr++ = *rptr++;       /* left */
+			if(NUM_CHANNELS == 2)
+				*wptr++ = *rptr++;  /* right */
+		}
+	}
+	data->frameIndex += framesToCalc;
+	return finished;
+}
+
 paError*
 Pa_Create(PaStream *stream, paError *err, paTestData *data)
 {
@@ -112,50 +157,4 @@ Pa_Destroy(paError *err, paTestData *data)
 	return 0;
 }
 
-/* This routine will be called by the PortAudio engine when audio is needed.
- * It may be called at interrupt level on some machines so don't do anything
- * that could mess up the system like calling malloc() or free().
- */
-static int
-recordCallback(
-		const void *inputBuffer, void *outputBuffer,
-		unsigned long framesPerBuffer,
-		const PaStreamCallbackTimeInfo* timeInfo,
-		PaStreamCallbackFlags statusFlags,
-		void *userData)
-{
-	paTestData *data = (paTestData*)userData;
-	const SAMPLE *rptr = (const SAMPLE*)inputBuffer;
-	SAMPLE *wptr = &data->recordedSamples[data->frameIndex * NUM_CHANNELS];
-	long framesToCalc;
-	long i;
-	int finished;
-	unsigned long framesLeft = data->maxFrameIndex - data->frameIndex;
-
-	if(framesLeft < framesPerBuffer) {
-		framesToCalc = framesLeft;
-		finished = paComplete;
-	} else {
-		framesToCalc = framesPerBuffer;
-		finished = paContinue;
-	}
-
-	if(inputBuffer == NULL) {
-		for(i=0; i<framesToCalc; i++) {
-			*wptr++ = SAMPLE_SILENCE;     /* left */
-			if(NUM_CHANNELS == 2)
-				*wptr++ = SAMPLE_SILENCE; /* right */
-		}
-	} else {
-		for(i=0; i<framesToCalc; i++) {
-			*wptr++ = *rptr++;       /* left */
-			printf("%d\n", data->recordedSamples[data->frameIndex+i]);
-			fflush(stdout);
-			if(NUM_CHANNELS == 2)
-				*wptr++ = *rptr++;  /* right */
-		}
-	}
-	data->frameIndex += framesToCalc;
-	return finished;
-}
 /* EOF */
