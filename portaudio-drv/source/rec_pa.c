@@ -69,14 +69,16 @@ recordCallback(
 	if(inputBuffer == NULL) {
 		for(i=0; i<framesToCalc; i++) {
 			*wptr++ = SAMPLE_SILENCE;     /* left */
-			if(PA_NUM_CHANNELS == 2)
+			#if PA_NUM_CHANNELS == 2
 				*wptr++ = SAMPLE_SILENCE; /* right */
+			#endif
 		}
 	} else {
 		for(i=0; i<framesToCalc; i++) {
 			*wptr++ = *rptr++;       /* left */
-			if(PA_NUM_CHANNELS == 2)
+			#if PA_NUM_CHANNELS == 2 
 				*wptr++ = *rptr++;  /* right */
+			#endif
 		}
 	}
 	data->frameIndex += framesToCalc;
@@ -100,7 +102,7 @@ Pa_Create(PaStream **stream, PaError err, paTestData *data)
 
 	/* From now on, recordedSamples is initialised */
 	data->recordedSamples = (PA_SAMPLE *) malloc(numBytes);
-	if(data->recordedSamples == NULL) {
+	if(data->recordedSamples == NULL) 
 		return Pa_Destroy(err, data, "allocate record array");
 
 	for(i=0; i<numSamples; i++)
@@ -137,6 +139,8 @@ Pa_Create(PaStream **stream, PaError err, paTestData *data)
 	err = Pa_StartStream(*stream);
 	if(err != paNoError)
 		return Pa_Destroy(err, data, "start stream");
+
+	return paNoError;
 }
 
 int

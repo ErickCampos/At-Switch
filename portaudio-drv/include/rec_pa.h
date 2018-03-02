@@ -8,8 +8,8 @@
 #include <portaudio.h>
 
 #define PA_SAMPLE_RATE        16000
-#define PA_FRAMES_PER_BUFFER  4096
-#define NUM_SECONDS           4
+#define PA_FRAMES_PER_BUFFER  1024
+#define NUM_SECONDS           1
 #define PA_NUM_CHANNELS       1    /* mono=1, stereo=2 */
 
 /* #define DITHER_FLAG    paDitherOff */
@@ -45,6 +45,5 @@ typedef struct {
 
 int Pa_Create(PaStream **stream, PaError err, paTestData *data);
 int Pa_Destroy(PaError err, paTestData *data, const char *msg);
-static int recordCallback(const void*, void*, unsigned long,
-						  const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void*);
+static int recordCallback(const void*, void*, unsigned long, const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void*);
 #endif /* _REC_PA_ */
