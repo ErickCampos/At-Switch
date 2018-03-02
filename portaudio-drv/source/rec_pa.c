@@ -51,8 +51,8 @@ recordCallback(
 		void *userData)
 {
 	paTestData *data = (paTestData*)userData;
-	const SAMPLE *rptr = (const SAMPLE*)inputBuffer;
-	SAMPLE *wptr = &data->recordedSamples[data->frameIndex * NUM_CHANNELS];
+	const PA_SAMPLE *rptr = (const PA_SAMPLE*)inputBuffer;
+	PA_SAMPLE *wptr = &data->recordedSamples[data->frameIndex * PA_NUM_CHANNELS];
 	long framesToCalc;
 	long i;
 	int finished;
@@ -69,13 +69,13 @@ recordCallback(
 	if(inputBuffer == NULL) {
 		for(i=0; i<framesToCalc; i++) {
 			*wptr++ = SAMPLE_SILENCE;     /* left */
-			if(NUM_CHANNELS == 2)
+			if(PA_NUM_CHANNELS == 2)
 				*wptr++ = SAMPLE_SILENCE; /* right */
 		}
 	} else {
 		for(i=0; i<framesToCalc; i++) {
 			*wptr++ = *rptr++;       /* left */
-			if(NUM_CHANNELS == 2)
+			if(PA_NUM_CHANNELS == 2)
 				*wptr++ = *rptr++;  /* right */
 		}
 	}
@@ -83,76 +83,74 @@ recordCallback(
 	return finished;
 }
 
-paError*
-Pa_Create(PaStream *stream, paError *err, paTestData *data)
+int
+Pa_Create(PaStream **stream, PaError err, paTestData *data)
 {
-	PaStreamParameters  inputParameters, outputParameters;
-	int                 i;
-	int                 totalFrames;
-	int                 numSamples;
-	int                 numBytes;
+	int i;
+	int totalFrames;
+	int numSamples;
+	int numBytes;
+	PaStreamParameters inParams, outParams;
 
-	/* Record for a few seconds. */
-	data.maxFrameIndex = totalFrames = NUM_SECONDS * SAMPLE_RATE;
-	data.frameIndex = 0;
-	numSamples = totalFrames * NUM_CHANNELS;
-	numBytes = numSamples * sizeof(SAMPLE);
+	/* Record for a few seconds */
+	data->maxFrameIndex = totalFrames = NUM_SECONDS * PA_SAMPLE_RATE;
+	data->frameIndex = 0;
+	numSamples = totalFrames * PA_NUM_CHANNELS;
+	numBytes = numSamples * sizeof(PA_SAMPLE);
 
-	/* From now on, recordedSamples is initialised. */
-	data.recordedSamples = (SAMPLE *) malloc(numBytes);
-	if(data.recordedSamples == NULL) {
-		printf("Could not allocate record array.\n");
-		return Pa_Destroy(&err, &data);
-	}
+	/* From now on, recordedSamples is initialised */
+	data->recordedSamples = (PA_SAMPLE *) malloc(numBytes);
+	if(data->recordedSamples == NULL) {
+		return Pa_Destroy(err, data, "allocate record array");
+
 	for(i=0; i<numSamples; i++)
-		data.recordedSamples[i] = 0;
+		data->recordedSamples[i] = 0;
 
 	err = Pa_Initialize();
 	if(err != paNoError)
-		return Pa_Destroy(&err, &data);
+		return Pa_Destroy(err, data, "initialize internat data structs");
 
-	inputParameters.device = Pa_GetDefaultInputDevice(); /* default input dev */
-	if (inputParameters.device == paNoDevice) {
-		fprintf(stderr,"Error: No default input device.\n");
-		return Pa_Destroy(&err, &data);
-	}
+	inParams.device = Pa_GetDefaultInputDevice(); /* default input dev */
+	if (inParams.device == paNoDevice)
+		return Pa_Destroy(err, data, "get default input device");
 
-	inputParameters.channelCount = 1;
-	inputParameters.sampleFormat = PA_SAMPLE_TYPE;
-	inputParameters.suggestedLatency = 
-			Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
-	inputParameters.hostApiSpecificStreamInfo = NULL;
+	inParams.channelCount = PA_NUM_CHANNELS;
+	inParams.sampleFormat = PA_SAMPLE_TYPE;
+	inParams.suggestedLatency = 
+			Pa_GetDeviceInfo(inParams.device)->defaultLowInputLatency;
+	inParams.hostApiSpecificStreamInfo = NULL;
 
-	/* Record some audio. -------------------------------------------- */
+	/* Record some audio -------------------------------------------- */
 	err = Pa_OpenStream(
-			&stream,
-			&inputParameters,
-			NULL,                  /* &outputParameters, */
-			SAMPLE_RATE,
-			FRAMES_PER_BUFFER,
+			stream,
+			&inParams,
+			NULL,                  /* &outParams, */
+			PA_SAMPLE_RATE,
+			PA_FRAMES_PER_BUFFER,
 			paClipOff, /* we won't output OOR samples so don't bother clippin them */
 			recordCallback,
-			&data);
+			data);
 
 	if(err != paNoError)
-		return Pa_Destroy(&err, &data);
+		return Pa_Destroy(err, data, "open stream");
 
-	err = Pa_StartStream(stream);
+	err = Pa_StartStream(*stream);
 	if(err != paNoError)
-		return Pa_Destroy(&err, &data);
+		return Pa_Destroy(err, data, "start stream");
 }
 
-paError
-Pa_Destroy(paError *err, paTestData *data)
+int
+Pa_Destroy(PaError err, paTestData *data, const char *msg)
 {
 	Pa_Terminate();
-	if(data->recordedSamples)       /* Sure it is NULL or valid. */
+	if(data->recordedSamples)       /* Sure it is NULL or valid */
 		free(data->recordedSamples);
 	if(err != paNoError) {
-		fprintf(stderr, "An error occured while using the portaudio stream\n");
+		fprintf(stderr, "An error occured while attempting to %s\n", msg);
 		fprintf(stderr, "Error number: %d\n", err);
 		fprintf(stderr, "Error message: %s\n", Pa_GetErrorText(err));
-		err = 1;          /* Always return 0 or 1, but no other return codes. */
+		fflush(stderr);
+		return 1;          /* Always return 0 or 1, but no other return codes */
 	}
 	return 0;
 }

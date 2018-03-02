@@ -1,0 +1,17 @@
+cc=gcc
+target=main
+cflags=-o $(target) -g
+libs=-lX11 -lportaudio -I$(shell pwd)/include
+deps=source/mouse_x11.c source/rec_pa.c
+
+all: $(target).c
+	$(cc) $(cflags) $(deps) $^ $(libs)
+
+debug:
+	gdb ./$(target)
+
+exec:
+	./$(target)
+
+clean:
+	rm -f $(target)
