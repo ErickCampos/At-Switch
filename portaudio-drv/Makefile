@@ -1,5 +1,5 @@
 cc=gcc
-target=main
+target=jatsd
 cflags=-o $(target) -g
 libs=-lX11 -lportaudio -I$(shell pwd)/include
 deps=source/mouse_x11.c source/rec_pa.c

@@ -33,7 +33,7 @@ main(void)
 	for(i=0; i<3; i++)
 		fifo[i] = -1;
 
-	i = 2;
+	i = 2; /* TODO sizeof(fifo)/sizeof(unsigned long)?  */
 	while(keep_running && (err = Pa_IsStreamActive(stream)) == 1 && i > -1) {
 		if(data.frameIndex != fifo[i])
 			fifo[i--] = data.frameIndex;
@@ -41,7 +41,7 @@ main(void)
 		Pa_Sleep(150); /* ms */
 	} /* close while */
 
-	/* TODO apply main routine here */
+	/* apply main routine here */
 	while(keep_running && (err = Pa_IsStreamActive(stream)) == 1) {
 
 		if(data.frameIndex != fifo[0]) {
