@@ -11,7 +11,7 @@ load R_2click_rapid_0amp.txt;
 load single_click_0amp.txt;
 
 figure;
-suptitle('1 long click, unamplif.');
+%suptitle('1 long click, unamplif.');
 subplot(2,1,1);
 	plot(abs(L_1click_long_0amp(49500:59499)), 'k:');
 	hold on;
@@ -67,7 +67,7 @@ suptitle('1 long click, unamplif.');
 		xlim([1250 1350])
 		set(gca, 'XTick', 0:10:6000);
 %% --------------------------------------------------------------
-close all;
+%close all;
 
 figure;
 suptitle('2 rapid clicks, unamplif.');
@@ -257,7 +257,7 @@ suptitle('2 rapid clicks, unamplif.');
 		xlim([4900 5050])
 		set(gca, 'XTick', 0:50:6000);
 % ---------------------------------------------------------------------
-close all;
+%close all;
 
 figure;
 suptitle('1 rapid click, unamplif.');
