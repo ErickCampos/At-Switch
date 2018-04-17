@@ -3,9 +3,10 @@
  * via audio jack's P2, 3.5mm connector as a simple 'mouse click'. No USB or
  * additional mouse device is needed, just the switch :)
  *  
- * Authors: Feb, 2018. Federal University of Pará (UFPA). Belém, Brazil.
+ * Authors: Feb, 2018
  * Cassio Batista - cassio.batista.13@gmail.com
  * Erick Campos - erick.c.modesto@gmail.com
+ * Federal University of Pará (UFPA). Belém, Brazil.
  * 
  * Credits:
  * ALSA Capture Program: Paul David (http://equalarea.com/paul/alsa-audio.html)
