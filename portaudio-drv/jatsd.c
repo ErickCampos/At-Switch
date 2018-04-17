@@ -49,7 +49,10 @@ main(void)
 	/*    '-----'-----'-----'     */
 	/*      last       first      */
 	/*       in         in        */
+	/* initialize queue with non valid frame index values */
 	unsigned long fifo[3]; 
+	for(i=0; i<3; i++)
+		fifo[i] = -1;
 
 	/* handling control c */
 	signal(SIGINT, sigint_handler);
@@ -58,10 +61,6 @@ main(void)
 	if((err = Pa_Create(&stream, err, &data)) != paNoError) {
 		return Pa_Destroy(err, &data, "create pa structures");
 	}
-
-	/* initialize queue with non valid frame index values */
-	for(i=0; i<3; i++)
-		fifo[i] = -1;
 
 	/* update frame indexes on queue */
 	i = 2; /* TODO sizeof(fifo)/sizeof(unsigned long)?  */
@@ -81,48 +80,56 @@ main(void)
 	/* take the mean and add 20% of power to ensure reliability */
 	avg_power /= 500*1.2; 
 
-	/* apply main routine here */
-	// TODO: https://github.com/EddieRingle/portaudio/blob/master/examples/paex_record_file.c
-	// TODO: http://portaudio.com/docs/v19-doxydocs/paex__record__file_8c_source.html
-	while(keep_running && (err = Pa_IsStreamActive(stream)) == 1) {
+	while(keep_running) {
+		/* apply main routine here */
+// TODO: https://github.com/EddieRingle/portaudio/blob/master/examples/paex_record_file.c
+// TODO: http://portaudio.com/docs/v19-doxydocs/paex__record__file_8c_source.html
+		while(keep_running && (err = Pa_IsStreamActive(stream)) == 1) {
 
-		/* wait for the proper time to en/dequeue */
-		while(data.frameIndex == fifo[0])
-			Pa_Sleep(500);
+			/* wait for the proper time to en/dequeue */
+			while(data.frameIndex == fifo[0])
+				Pa_Sleep(500);
 
-		/* update queue: enqueue D (at 0), dequeue A (from 2) */
-		fifo[2] = fifo[1];
-		fifo[1] = fifo[0];
-		fifo[0] = data.frameIndex;
+			/* update queue: enqueue D (at 0), dequeue A (from 2) */
+			fifo[2] = fifo[1];
+			fifo[1] = fifo[0];
+			fifo[0] = data.frameIndex;
 
-		if(click_count > 0) {
-			click_count -= 2;
-			continue;
-		}
+			if(click_count > 0) {
+				click_count -= 2;
+				continue;
+			}
 
-		/* looking at every 1k samples from the signal can save our precious time */
-		win_step = INIT_WINDOW_STEP;
-		click_count = 0;
-		for(i=fifo[2]; i<fifo[1]; i+=win_step) {
-			if(abs(data.recordedSamples[i]) > avg_power) {
-				win_step /= 2;
-				if(++click_count == 5) {
-					fprintf(stdout, "CLICK!\n");
-					fflush(stdout);
-					break;
+			/* looking at every 1k samples from the signal can save our precious time */
+			win_step = INIT_WINDOW_STEP;
+			click_count = 0;
+			for(i=fifo[2]; i<fifo[1]; i+=win_step) {
+				if(abs(data.recordedSamples[i]) > avg_power) {
+					win_step /= 2;
+					if(++click_count == 5) {
+						fprintf(stdout, "CLICK!\n");
+						fflush(stdout);
+						break;
+					}
 				}
 			}
-		}
 
-		if(DEGUB) {
-			for(i=fifo[2]; i<fifo[1]; i++) 
-				fprintf(stdout, "%+04d\n", data.recordedSamples[i]);
-			fflush(stdout);
-		}
+			if(DEGUB) {
+				for(i=fifo[2]; i<fifo[1]; i++) 
+					fprintf(stdout, "%+04d\n", data.recordedSamples[i]);
+				fflush(stdout);
+			}
 
-		/* gimme a break for some ms */
-		Pa_Sleep(500);
-	} /* close while */
+			/* gimme a break for some ms */
+			Pa_Sleep(500);
+		} /* close while */
+
+		if((err = Pa_Init(&stream, err, &data)) != paNoError) {
+			return Pa_Destroy(err, &data, "resetting pa structures");
+		}
+		fprintf(stdout, "meu irmãozinho...\n");
+		fflush(stdout);
+	}
 
 	if(err < 0)
 		return Pa_Destroy(err, &data, "check whether stream is active");

@@ -44,6 +44,8 @@ typedef struct {
 } paTestData;
 
 int Pa_Create(PaStream **stream, PaError err, paTestData *data);
+int Pa_Init(PaStream **stream, PaError err, paTestData *data);
 int Pa_Destroy(PaError err, paTestData *data, const char *msg);
-static int recordCallback(const void*, void*, unsigned long, const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void*);
+static int recordCallback(const void*, void*, unsigned long,
+		const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void*);
 #endif /* _REC_PA_ */

@@ -105,12 +105,28 @@ Pa_Create(PaStream **stream, PaError err, paTestData *data)
 	if(data->recordedSamples == NULL) 
 		return Pa_Destroy(err, data, "allocate record array");
 
+	return Pa_Init(stream, err, data);
+}
+
+int
+Pa_Init(PaStream **stream, PaError err,  paTestData *data)
+{
+	int i;
+	int totalFrames;
+	int numSamples;
+	PaStreamParameters inParams, outParams;
+
+	/* Record for a few seconds */
+	data->maxFrameIndex = totalFrames = NUM_SECONDS * PA_SAMPLE_RATE;
+	data->frameIndex = 0;
+	numSamples = totalFrames * PA_NUM_CHANNELS;
+
 	for(i=0; i<numSamples; i++)
 		data->recordedSamples[i] = 0;
 
 	err = Pa_Initialize();
 	if(err != paNoError)
-		return Pa_Destroy(err, data, "initialize internat data structs");
+		return Pa_Destroy(err, data, "initialize internal data structs");
 
 	inParams.device = Pa_GetDefaultInputDevice(); /* default input dev */
 	if (inParams.device == paNoDevice)
