@@ -16,8 +16,8 @@
 #include "rec_pa.h"
 #include "mouse_x11.h"
 
-#define INIT_WINDOW_STEP 750
-#define DEGUB 0
+#define INIT_WINDOW_STEP 1000
+#define DEGUB 1
 
 #define C_FG_R   "\x1b[31m" /* red */
 #define C_RESET  "\x1b[0m"
@@ -89,13 +89,12 @@ main(void)
 
 	while(keep_running) {
 		/* apply main routine here */
-// TODO: https://github.com/EddieRingle/portaudio/blob/master/examples/paex_record_file.c
-// TODO: http://portaudio.com/docs/v19-doxydocs/paex__record__file_8c_source.html
+		/* TODO: search for pa ring buffer */
 		while(keep_running && (err = Pa_IsStreamActive(stream)) == 1) {
 
 			/* wait for the proper time to en/dequeue */
 			while(data.frameIndex == fifo[0])
-				Pa_Sleep(250);
+				Pa_Sleep(200);
 
 			/* update queue: enqueue D (at 0), dequeue A (from 2) */
 			fifo[2] = fifo[1];
@@ -104,7 +103,7 @@ main(void)
 
 			if(click_count > 0) {
 				click_count -= 2;
-				Pa_Sleep(150);
+				Pa_Sleep(500);
 				continue;
 			}
 
@@ -138,8 +137,6 @@ main(void)
 		if((err = Pa_Init(&stream, err, &data)) != paNoError) {
 			return Pa_Destroy(err, &data, "resetting pa structures");
 		}
-		fprintf(stdout, "meu irmãozinho...\n");
-		fflush(stdout);
 	}
 
 	if(err < 0)
