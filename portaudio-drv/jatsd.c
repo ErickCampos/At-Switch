@@ -54,6 +54,13 @@ main(void)
 	for(i=0; i<3; i++)
 		fifo[i] = -1;
 
+	/* open X display */
+	Display *disp = XOpenDisplay(NULL);
+	if(disp == NULL) {
+		fprintf(stderr, "Can't open display!\n");
+		return EXIT_FAILURE;
+	}
+
 	/* handling control c */
 	signal(SIGINT, sigint_handler);
 
@@ -88,7 +95,7 @@ main(void)
 
 			/* wait for the proper time to en/dequeue */
 			while(data.frameIndex == fifo[0])
-				Pa_Sleep(500);
+				Pa_Sleep(250);
 
 			/* update queue: enqueue D (at 0), dequeue A (from 2) */
 			fifo[2] = fifo[1];
@@ -97,6 +104,7 @@ main(void)
 
 			if(click_count > 0) {
 				click_count -= 2;
+				Pa_Sleep(150);
 				continue;
 			}
 
@@ -107,8 +115,11 @@ main(void)
 				if(abs(data.recordedSamples[i]) > avg_power) {
 					win_step /= 2;
 					if(++click_count == 5) {
-						fprintf(stdout, "CLICK!\n");
-						fflush(stdout);
+						mouse_click(disp, Button1);
+						if(DEGUB) {
+							fprintf(stdout, "CLICK!\n");
+							fflush(stdout);
+						}
 						break;
 					}
 				}
@@ -121,7 +132,7 @@ main(void)
 			}
 
 			/* gimme a break for some ms */
-			Pa_Sleep(500);
+			Pa_Sleep(250);
 		} /* close while */
 
 		if((err = Pa_Init(&stream, err, &data)) != paNoError) {
@@ -146,5 +157,9 @@ main(void)
 	if(err != paNoError)
 		return Pa_Destroy(err, &data, "close stream");
 
+	/* close X display and exit */
+	XCloseDisplay(disp);
+
 	return Pa_Destroy(err, &data, NULL);
 }
+/* EOF */

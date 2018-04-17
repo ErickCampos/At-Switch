@@ -9,7 +9,7 @@
 
 #define PA_SAMPLE_RATE        16000
 #define PA_FRAMES_PER_BUFFER  2048
-#define NUM_SECONDS           10
+#define NUM_SECONDS           60
 #define PA_NUM_CHANNELS       1    /* mono=1, stereo=2 */
 
 /* #define DITHER_FLAG    paDitherOff */
