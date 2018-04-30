@@ -34,8 +34,8 @@ int
 main(void)
 {
 	PaStream*  stream;
-	PaError    err;
 	paTestData data;
+	PaError    err = paNoError;
 
 	long i;              /* a dumb iterator */
 	int win_step;        /* step to walk over the window */

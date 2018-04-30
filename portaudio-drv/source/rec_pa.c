@@ -88,11 +88,9 @@ recordCallback(
 int
 Pa_Create(PaStream **stream, PaError err, paTestData *data)
 {
-	int i;
 	int totalFrames;
 	int numSamples;
 	int numBytes;
-	PaStreamParameters inParams, outParams;
 
 	/* Record for a few seconds */
 	data->maxFrameIndex = totalFrames = NUM_SECONDS * PA_SAMPLE_RATE;
@@ -114,7 +112,7 @@ Pa_Init(PaStream **stream, PaError err,  paTestData *data)
 	int i;
 	int totalFrames;
 	int numSamples;
-	PaStreamParameters inParams, outParams;
+	PaStreamParameters inParams; 
 
 	/* Record for a few seconds */
 	data->maxFrameIndex = totalFrames = NUM_SECONDS * PA_SAMPLE_RATE;
