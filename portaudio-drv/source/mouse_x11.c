@@ -108,4 +108,20 @@ mouse_move_to(Display *display, int x, int y)
 				x, y);
 	usleep(1);
 }
+
+/* https://github.com/aktau/hhpc.git */
+/*static Cursor nullCursor(Display *dpy, Drawable dw) {
+	XColor color1  = { 0, 127, 0 };
+	XColor color2  = { 127, 10, 127 };
+
+	// https://tronche.com/gui/x/xlib/appendix/b/
+	// https://tronche.com/gui/x/xlib/pixmap-and-cursor/XCreateFontCursor.html
+	Cursor cursor  = XCreateFontCursor(dpy, 54);
+
+	// https://tronche.com/gui/x/xlib/pixmap-and-cursor/XRecolorCursor.html
+	XRecolorCursor(dpy, cursor, &color1, &color2);
+
+	return cursor;
+}*/
+
 /* EOF */
