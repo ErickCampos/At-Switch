@@ -17,6 +17,7 @@
 #include "mouse_x11.h"
 
 #define INIT_WINDOW_STEP 1000
+#define DPLOT 0
 #define DEGUB 1
 
 #define C_FG_R   "\x1b[31m" /* red */
@@ -84,10 +85,11 @@ main(void)
 	for(i=lower_interval; i<lower_interval+500; i++)
 		avg_power += pow(abs(data.recordedSamples[i]), 2);
 
-	/* take the mean and add 20% of power to ensure reliability */
-	avg_power /= 500; 
-	avg_power *= 2; 
+	/* take the mean and double the power to ensure reliability */
+	avg_power /= 500;
+	avg_power *= 2;
 
+	/* main event loop */
 	while(keep_running) {
 		/* apply main routine here */
 		/* TODO: search for pa ring buffer */
@@ -113,6 +115,7 @@ main(void)
 			click_count = 0;
 			for(i=fifo[2]; i<fifo[1]; i+=win_step) {
 				if(abs(data.recordedSamples[i]) > avg_power) {
+					printf(".");
 					win_step /= 2;
 					if(++click_count == 5) {
 						mouse_click(disp, Button1);
@@ -125,7 +128,7 @@ main(void)
 				}
 			}
 
-			if(DEGUB) {
+			if(DPLOT) {
 				for(i=fifo[2]; i<fifo[1]; i++) 
 					fprintf(stdout, "%+04d\n", data.recordedSamples[i]);
 				fflush(stdout);
