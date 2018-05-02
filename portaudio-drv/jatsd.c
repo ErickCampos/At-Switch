@@ -85,7 +85,8 @@ main(void)
 		avg_power += pow(abs(data.recordedSamples[i]), 2);
 
 	/* take the mean and add 20% of power to ensure reliability */
-	avg_power /= 500*1.2; 
+	avg_power /= 500; 
+	avg_power *= 2; 
 
 	while(keep_running) {
 		/* apply main routine here */
@@ -102,7 +103,7 @@ main(void)
 			fifo[0] = data.frameIndex;
 
 			if(click_count > 0) {
-				click_count -= 2;
+				click_count -= 1;
 				Pa_Sleep(500);
 				continue;
 			}
