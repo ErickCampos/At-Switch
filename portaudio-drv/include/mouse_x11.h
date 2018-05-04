@@ -26,11 +26,31 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <X11/Xlib.h>
 
-void mouse_click(Display *display, int button);          /* simulate click */
-void mouse_get_coords(Display *display, int *x, int *y); /* get coordinates */
-void mouse_move(Display *display, int x, int y);         /* move (relat.) */
-void mouse_move_to(Display *display, int x, int y);      /* move (abs.) */
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/cursorfont.h>
+
+#include <sys/select.h>
+#include <sys/time.h>
+
+#include <signal.h>
+#include <time.h>
+
+typedef struct color_mouse_t {
+	Display* d;
+	Window w;
+} color_mouse_t;
+
+void mouse_click(Display *display, int button);             /* simulate click */
+void mouse_get_coords(Display *display, int *x, int *y);    /* get coordinates */
+void mouse_move(Display *display, int x, int y);            /* move (relat.) */
+void mouse_move_to(Display *display, int x, int y);         /* move (abs.) */
+void *mouse_color_cursor(void* var);  /* modify cursor icon */
+static int mouse_setup_signals();
+static void delay(time_t sec, long msec);
+static int mouse_grab_pointer(Display *disp,
+		Window win, Cursor cursor, unsigned int mask);
+//static void mouse_color_cursor(Display *disp, Window win);  /* modify cursor icon */
 
 #endif /* _MOUSE_X11_ */

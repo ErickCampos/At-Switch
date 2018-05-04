@@ -12,6 +12,7 @@
  */
 
 #include <signal.h>
+#include <pthread.h>
 #include <math.h>
 #include "rec_pa.h"
 #include "mouse_x11.h"
@@ -45,6 +46,7 @@ main(void)
 	int win_count = 0;
 	int click_count = 0;
 	long avg_power = 0;  /* average power of the signal */
+	pthread_t tid;
 
 	/* simulate a queue of size 3 */
 	/*       0     1     2        */
@@ -64,6 +66,12 @@ main(void)
 		fprintf(stderr, "Can't open display!\n");
 		return EXIT_FAILURE;
 	}
+
+	Window rootwin = RootWindow(disp, DefaultScreen(disp));
+
+	color_mouse_t disp_win;
+	disp_win.d = disp;
+	disp_win.w = rootwin;
 
 	/* handling control c */
 	signal(SIGINT, sigint_handler);
@@ -135,12 +143,15 @@ main(void)
 					#endif
 					win_step /= 2;
 					if(++win_count == 5) {
+						
 						#if DEGUB
 							fprintf(stdout, "CLICK!\n");
 							fflush(stdout);
 						#endif
+						pthread_create(&tid, NULL, mouse_color_cursor, &disp_win);
 						mouse_click(disp, Button1);
 						click_count++;
+						pthread_join(tid, NULL);
 						break;
 					}
 				}

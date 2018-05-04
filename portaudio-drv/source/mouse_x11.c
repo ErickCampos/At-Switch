@@ -17,6 +17,14 @@
 
 #include "mouse_x11.h"
 
+static volatile sig_atomic_t working;
+
+static void
+mouse_signal_handler(int signo) 
+{
+    working = 0;
+}
+
 void
 mouse_click(Display *display, int button)
 {
@@ -109,19 +117,182 @@ mouse_move_to(Display *display, int x, int y)
 	usleep(1);
 }
 
-/* https://github.com/aktau/hhpc.git */
-/*static Cursor nullCursor(Display *dpy, Drawable dw) {
-	XColor color1  = { 0, 127, 0 };
-	XColor color2  = { 127, 10, 127 };
+static int
+mouse_setup_signals() 
+{
+	struct sigaction act;
 
-	// https://tronche.com/gui/x/xlib/appendix/b/
-	// https://tronche.com/gui/x/xlib/pixmap-and-cursor/XCreateFontCursor.html
-	Cursor cursor  = XCreateFontCursor(dpy, 54);
+	memset(&act, 0, sizeof(act));
 
-	// https://tronche.com/gui/x/xlib/pixmap-and-cursor/XRecolorCursor.html
-	XRecolorCursor(dpy, cursor, &color1, &color2);
+	/* Use the sa_sigaction field because the handles has two additional parameters */
+	act.sa_handler = mouse_signal_handler;
+	act.sa_flags   = 0;
+	sigemptyset(&act.sa_mask);
 
-	return cursor;
-}*/
+	if (sigaction(SIGTERM, &act, NULL) == -1) {
+		perror("hhpc: could not register SIGTERM");
+		return 0;
+	}
 
+	if (sigaction(SIGHUP, &act, NULL) == -1) {
+		perror("hhpc: could not register SIGHUP");
+		return 0;
+	}
+
+	if (sigaction(SIGINT, &act, NULL) == -1) {
+		perror("hhpc: could not register SIGINT");
+		return 0;
+	}
+
+	if (sigaction(SIGQUIT, &act, NULL) == -1) {
+		perror("hhpc: could not register SIGQUIT");
+		return 0;
+	}
+
+	return 1;
+}
+
+/**
+ * milliseconds over 1000 will be ignored
+ */
+static void
+delay(time_t sec, long msec) 
+{
+	struct timespec sleep;
+
+	sleep.tv_sec  = sec;
+	sleep.tv_nsec = (msec % 1000) * 1000 * 1000;
+
+	if (nanosleep(&sleep, NULL) == -1) 
+		mouse_signal_handler(0);
+}
+
+static int
+mouse_grab_pointer(Display *disp, Window win, Cursor cursor, unsigned int mask)
+{
+	int rc;
+
+	/* retry until we actually get the pointer (with a suitable delay)
+	 * or we get an error we can't recover from. */
+	while (working) {
+		rc = XGrabPointer(disp, win, True, mask,
+				GrabModeSync, GrabModeAsync, None, cursor, CurrentTime);
+
+		switch (rc) {
+			case GrabSuccess:
+				#if MOUSE_X11_DEGUB
+					fprintf(stdout, "hhpc: succesfully grabbed mouse pointer\n");
+				#endif
+				return 1;
+			case AlreadyGrabbed:
+				#if MOUSE_X11_DEGUB
+					fprintf(stdout, "hhpc: XGrabPointer: already grabbed ");
+					fprintf(stdout, "mouse pointer, retrying with delay\n");
+				#endif
+				delay(0, 500);
+				break;
+			case GrabFrozen:
+				#if MOUSE_X11_DEGUB
+					fprintf(stdout, "hhpc: XGrabPointer: ");
+					fprintf(stdout, "grab was frozen, retrying after delay\n");
+				#endif
+				delay(0, 500);
+				break;
+			case GrabNotViewable:
+				fprintf(stderr, "hhpc: XGrabPointer: grab was not viewable, exiting\n");
+				return 0;
+			case GrabInvalidTime:
+				fprintf(stderr, "hhpc: XGrabPointer: invalid time, exiting\n");
+				return 0;
+			default:
+				fprintf(stderr, "hhpc: XGrabPointer: ");
+				fprintf(stderr, "could not grab mouse pointer (%d), exiting\n", rc);
+				return 0;
+		}
+	}
+
+	return 0;
+}
+
+//mouse_color_cursor(Display *display, Window win)
+void *mouse_color_cursor(void *var)
+{
+	color_mouse_t *dw_struct = (color_mouse_t*) var;
+	int xfd   = ConnectionNumber(dw_struct->d);
+
+	const unsigned int mask = PointerMotionMask | ButtonPressMask;
+
+	fd_set fds;
+	XEvent event;
+
+	/* https://tronche.com/gui/x/xlib/color/structures.html */
+	XColor fg, bg; 
+	fg.red   = 0;     bg.red   = 65535; 
+	fg.green = 65535; bg.green = 65535;
+	fg.blue  = 0;     bg.blue  = 0;
+
+	/* https://tronche.com/gui/x/xlib/appendix/b/ */
+	/* https://tronche.com/gui/x/xlib/pixmap-and-cursor/XCreateFontCursor.html */
+	Cursor mcursor  = XCreateFontCursor(dw_struct->d, XC_gobbler);
+
+	/* https://tronche.com/gui/x/xlib/pixmap-and-cursor/XRecolorCursor.html */
+	XRecolorCursor(dw_struct->d, mcursor, &fg, &bg);
+
+	working = 1;
+
+	if (!mouse_setup_signals()) {
+		fprintf(stderr, "hhpc: could not register signals. ");
+		fprintf(stderr, "program will not exit cleanly\n");
+		fflush(stderr);
+	}
+
+	if (working && mouse_grab_pointer(dw_struct->d, dw_struct->w, mcursor, mask)) {
+		/* we grab in sync mode, which stops pointer events from processing,
+		 * so we explicitly have to re-allow it with XAllowEvents. The old
+		 * method was to just grab in async mode so we wouldn't need this,
+		 * but that disables replaying the pointer events */
+		XAllowEvents(dw_struct->d, SyncPointer, CurrentTime);
+
+		/* syncing is necessary, otherwise the X11 FD will never receive an
+		 * event (and thus will never be ready, strangely enough) */
+		XSync(dw_struct->d, False);
+
+		/* add the X11 fd to the fdset so we can poll/select on it */
+		FD_ZERO(&fds);
+		FD_SET(xfd, &fds);
+
+		/* we poll on the X11 fd to see if an event has come in, select()
+		 * is interruptible by signals, which allows ctrl+c to work. If we
+		 * were to just use XNextEvent() (which blocks), ctrl+c would not
+		 * work. */
+		if (select(xfd + 1, &fds, NULL, NULL, NULL) > 0) {
+			#if MOUSE_X11_DEGUB
+				fprintf(stdout, "hhpc: event received, ungrabbing and sleeping\n");
+				fflush(stdout);
+			#endif
+
+			/* event received, replay event, release mouse, drain, sleep */
+			XAllowEvents(dw_struct->d, ReplayPointer, CurrentTime);
+			XUngrabPointer(dw_struct->d, CurrentTime);
+
+			/* drain events */
+			while (XPending(dw_struct->d)) {
+				XMaskEvent(dw_struct->d, mask, &event);
+				#if MOUSE_X11_DEGUB
+					printf(stdout, "hhpc: draining event\n");
+					fflush(stdout);
+				#endif
+			}
+
+			delay(0, 500);
+			mouse_signal_handler(1);
+		} else {
+			if(working)
+				perror("hhpc: error while select()'ing");
+		}
+	}
+
+	XUngrabPointer(dw_struct->d, CurrentTime);
+	XFreeCursor(dw_struct->d, mcursor);
+}
 /* EOF */
