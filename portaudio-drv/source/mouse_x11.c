@@ -28,7 +28,7 @@ x11_signal_handler(int signo)
 void
 x11_click(Display *display, int button)
 {
-	#if MOUSE_X11_DEGUB
+	#if X11_DEGUB
 		fprintf(stdout, X11_TAG "creating mouse click event\n");
 	#endif
 	/* create the event */
@@ -40,7 +40,7 @@ x11_click(Display *display, int button)
 	event.xbutton.same_screen = True;
 	event.xbutton.subwindow = DefaultRootWindow(display);
 
-	#if MOUSE_X11_DEGUB
+	#if X11_DEGUB
 		fprintf(stdout, X11_TAG "querying pointer to subwindows\n");
 	#endif
 	while(event.xbutton.subwindow) {
@@ -52,7 +52,7 @@ x11_click(Display *display, int button)
 				&event.xbutton.state);
 	}
 
-	#if MOUSE_X11_DEGUB
+	#if X11_DEGUB
 		fprintf(stdout, X11_TAG "sending the 'press' event\n");
 	#endif
 	/* press */
@@ -62,7 +62,7 @@ x11_click(Display *display, int button)
 	XFlush(display);
 	usleep(1);
 
-	#if MOUSE_X11_DEGUB
+	#if X11_DEGUB
 		fprintf(stdout, X11_TAG "sending the 'release' event\n");
 	#endif
 	/* release */
@@ -142,20 +142,20 @@ x11_grab_pointer(Display *disp, Window win, Cursor cursor, unsigned int mask)
 
 		switch (rc) {
 			case GrabSuccess:
-				#if MOUSE_X11_DEGUB
+				#if X11_DEGUB
 					fprintf(stdout, HHPC_TAG
 							"succesfully grabbed mouse pointer\n");
 				#endif
 				return 1;
 			case AlreadyGrabbed:
-				#if MOUSE_X11_DEGUB
+				#if X11_DEGUB
 					fprintf(stdout, HHPC_TAG "XGrabPointer: already grabbed "
 							"mouse pointer, retrying with delay\n");
 				#endif
 				x11_delay(0, 500);
 				break;
 			case GrabFrozen:
-				#if MOUSE_X11_DEGUB
+				#if X11_DEGUB
 					fprintf(stdout, HHPC_TAG "XGrabPointer: "
 							"grab was frozen, retrying after delay\n");
 				#endif
@@ -218,7 +218,7 @@ x11_color_cursor(Display *display, Window win)
 		/* drain events */
 		while (XPending(display)) {
 			XMaskEvent(display, mask, &event);
-			#if MOUSE_X11_DEGUB
+			#if X11_DEGUB
 				fprintf(stdout, HHPC_TAG "draining event\n");
 				fflush(stdout);
 			#endif
@@ -228,7 +228,7 @@ x11_color_cursor(Display *display, Window win)
 		x11_signal_handler(0);
 	}
 
-	#if MOUSE_X11_DEGUB
+	#if X11_DEGUB
 		fprintf(stdout, HHPC_TAG "ungrabbing\n");
 		fflush(stdout);
 	#endif
