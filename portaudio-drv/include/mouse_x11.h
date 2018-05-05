@@ -19,8 +19,9 @@
 #ifndef _MOUSE_X11_
 #define _MOUSE_X11_
 
-#define MOUSE_X11_TAG   "[X11] "
-#define MOUSE_X11_DEGUB 1
+#define X11_TAG   "[X11] "
+#define HHPC_TAG  "[HHPC] "
+#define X11_DEGUB 0
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,14 +38,12 @@
 #include <signal.h>
 #include <time.h>
 
-void mouse_click(Display *display, int button);             /* simulate click */
-void mouse_get_coords(Display *display, int *x, int *y);    /* get coordinates */
-void mouse_move(Display *display, int x, int y);            /* move (relat.) */
-void mouse_move_to(Display *display, int x, int y);         /* move (abs.) */
-static int mouse_setup_signals();
-static void delay(time_t sec, long msec);
-static int mouse_grab_pointer(Display *disp,
-		Window win, Cursor cursor, unsigned int mask);
-void mouse_color_cursor(Display *disp, Window win);  /* modify cursor icon */
+void x11_click(Display *display, int button);             /* simulate click */
+void x11_get_coords(Display *display, int *x, int *y);    /* get coordinates */
+void x11_move(Display *display, int x, int y);            /* move (relat.) */
+void x11_move_to(Display *display, int x, int y);         /* move (abs.) */
+void x11_delay(time_t sec, long msec);
+int  x11_grab_pointer(Display *disp, Window win, Cursor cursor, unsigned int mask);
+void x11_color_cursor(Display *disp, Window win);  /* modify cursor icon */
 
 #endif /* _MOUSE_X11_ */

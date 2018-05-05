@@ -65,7 +65,7 @@ main(void)
 		return EXIT_FAILURE;
 	}
 
-	Window rootwin = RootWindow(disp, DefaultScreen(disp));
+	Window rootxwin = RootWindow(disp, DefaultScreen(disp));
 
 	/* handling control c */
 	signal(SIGINT, sigint_handler);
@@ -129,7 +129,7 @@ main(void)
 			 * instead of one by one can save our precious time */
 			win_step = INIT_WINDOW_STEP;
 			win_count = 0;
-			for(i=fifo[2]; i<fifo[1]; i+=win_step) {
+			for(i=fifo[2]; i<fifo[1] && keep_running; i+=win_step) {
 				if(abs(data.recordedSamples[i]) > avg_power) {
 					#if DEGUB
 						fprintf(stdout, ".");
@@ -141,11 +141,13 @@ main(void)
 							fprintf(stdout, "CLICK!\n");
 							fflush(stdout);
 						#endif
-						mouse_click(disp, Button1);
-						mouse_color_cursor(disp, rootwin);
+						x11_click(disp, Button1);
+						x11_color_cursor(disp, rootxwin);
 						click_count++;
 						break;
-					}
+					} 
+				} else {
+					//win_count--;
 				}
 			}
 
