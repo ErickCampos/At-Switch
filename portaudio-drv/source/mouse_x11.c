@@ -139,10 +139,10 @@ mouse_setup_signals()
 		return 0;
 	}
 
-	if (sigaction(SIGINT, &act, NULL) == -1) {
-		perror("hhpc: could not register SIGINT");
-		return 0;
-	}
+	//if (sigaction(SIGINT, &act, NULL) == -1) {
+	//	perror("hhpc: could not register SIGINT");
+	//	return 0;
+	//}
 
 	if (sigaction(SIGQUIT, &act, NULL) == -1) {
 		perror("hhpc: could not register SIGQUIT");
@@ -152,9 +152,6 @@ mouse_setup_signals()
 	return 1;
 }
 
-/**
- * milliseconds over 1000 will be ignored
- */
 static void
 delay(time_t sec, long msec) 
 {
@@ -214,15 +211,14 @@ mouse_grab_pointer(Display *disp, Window win, Cursor cursor, unsigned int mask)
 	return 0;
 }
 
-//mouse_color_cursor(Display *display, Window win)
-void *mouse_color_cursor(void *var)
+void
+mouse_color_cursor(Display *display, Window win)
 {
-	color_mouse_t *dw_struct = (color_mouse_t*) var;
-	int xfd   = ConnectionNumber(dw_struct->d);
+	//int xfd   = ConnectionNumber(display);
 
 	const unsigned int mask = PointerMotionMask | ButtonPressMask;
 
-	fd_set fds;
+	//fd_set fds;
 	XEvent event;
 
 	/* https://tronche.com/gui/x/xlib/color/structures.html */
@@ -233,66 +229,71 @@ void *mouse_color_cursor(void *var)
 
 	/* https://tronche.com/gui/x/xlib/appendix/b/ */
 	/* https://tronche.com/gui/x/xlib/pixmap-and-cursor/XCreateFontCursor.html */
-	Cursor mcursor  = XCreateFontCursor(dw_struct->d, XC_gobbler);
+	Cursor mcursor  = XCreateFontCursor(display, XC_gobbler);
 
 	/* https://tronche.com/gui/x/xlib/pixmap-and-cursor/XRecolorCursor.html */
-	XRecolorCursor(dw_struct->d, mcursor, &fg, &bg);
+	XRecolorCursor(display, mcursor, &fg, &bg);
 
 	working = 1;
 
-	if (!mouse_setup_signals()) {
-		fprintf(stderr, "hhpc: could not register signals. ");
-		fprintf(stderr, "program will not exit cleanly\n");
-		fflush(stderr);
-	}
+	//if (!mouse_setup_signals()) {
+	//	fprintf(stderr, "hhpc: could not register signals. ");
+	//	fprintf(stderr, "program will not exit cleanly\n");
+	//	fflush(stderr);
+	//}
 
-	if (working && mouse_grab_pointer(dw_struct->d, dw_struct->w, mcursor, mask)) {
+	if (working && mouse_grab_pointer(display, win, mcursor, mask)) {
 		/* we grab in sync mode, which stops pointer events from processing,
 		 * so we explicitly have to re-allow it with XAllowEvents. The old
 		 * method was to just grab in async mode so we wouldn't need this,
 		 * but that disables replaying the pointer events */
-		XAllowEvents(dw_struct->d, SyncPointer, CurrentTime);
+		XAllowEvents(display, SyncPointer, CurrentTime);
 
 		/* syncing is necessary, otherwise the X11 FD will never receive an
 		 * event (and thus will never be ready, strangely enough) */
-		XSync(dw_struct->d, False);
+		XSync(display, False);
 
-		/* add the X11 fd to the fdset so we can poll/select on it */
-		FD_ZERO(&fds);
-		FD_SET(xfd, &fds);
+		///* add the X11 fd to the fdset so we can poll/select on it */
+		//FD_ZERO(&fds);
+		//FD_SET(xfd, &fds);
 
 		/* we poll on the X11 fd to see if an event has come in, select()
 		 * is interruptible by signals, which allows ctrl+c to work. If we
 		 * were to just use XNextEvent() (which blocks), ctrl+c would not
 		 * work. */
-		if (select(xfd + 1, &fds, NULL, NULL, NULL) > 0) {
+		delay(0, 1250);
+		//if (select(xfd + 1, &fds, NULL, NULL, NULL) > 0) {
 			#if MOUSE_X11_DEGUB
 				fprintf(stdout, "hhpc: event received, ungrabbing and sleeping\n");
 				fflush(stdout);
 			#endif
 
-			/* event received, replay event, release mouse, drain, sleep */
-			XAllowEvents(dw_struct->d, ReplayPointer, CurrentTime);
-			XUngrabPointer(dw_struct->d, CurrentTime);
+			///* event received, replay event, release mouse, drain, sleep */
+			XAllowEvents(display, ReplayPointer, CurrentTime);
+			XUngrabPointer(display, CurrentTime);
 
 			/* drain events */
-			while (XPending(dw_struct->d)) {
-				XMaskEvent(dw_struct->d, mask, &event);
+			while (XPending(display)) {
+				XMaskEvent(display, mask, &event);
 				#if MOUSE_X11_DEGUB
-					printf(stdout, "hhpc: draining event\n");
+					fprintf(stdout, "hhpc: draining event\n");
 					fflush(stdout);
 				#endif
 			}
 
-			delay(0, 500);
-			mouse_signal_handler(1);
-		} else {
-			if(working)
-				perror("hhpc: error while select()'ing");
-		}
+			delay(0, 1250);
+			mouse_signal_handler(0);
+		//} else {
+		//	if(working)
+		//		perror("hhpc: error while select()'ing");
+		//}
 	}
 
-	XUngrabPointer(dw_struct->d, CurrentTime);
-	XFreeCursor(dw_struct->d, mcursor);
+	#if MOUSE_X11_DEGUB
+		fprintf(stdout, MOUSE_X11_TAG "ungrabbing\n");
+		fflush(stdout);
+	#endif
+	XUngrabPointer(display, CurrentTime);
+	XFreeCursor(display, mcursor);
 }
 /* EOF */

@@ -20,7 +20,7 @@
 #define _MOUSE_X11_
 
 #define MOUSE_X11_TAG   "[X11] "
-#define MOUSE_X11_DEGUB 0
+#define MOUSE_X11_DEGUB 1
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,20 +37,14 @@
 #include <signal.h>
 #include <time.h>
 
-typedef struct color_mouse_t {
-	Display* d;
-	Window w;
-} color_mouse_t;
-
 void mouse_click(Display *display, int button);             /* simulate click */
 void mouse_get_coords(Display *display, int *x, int *y);    /* get coordinates */
 void mouse_move(Display *display, int x, int y);            /* move (relat.) */
 void mouse_move_to(Display *display, int x, int y);         /* move (abs.) */
-void *mouse_color_cursor(void* var);  /* modify cursor icon */
 static int mouse_setup_signals();
 static void delay(time_t sec, long msec);
 static int mouse_grab_pointer(Display *disp,
 		Window win, Cursor cursor, unsigned int mask);
-//static void mouse_color_cursor(Display *disp, Window win);  /* modify cursor icon */
+void mouse_color_cursor(Display *disp, Window win);  /* modify cursor icon */
 
 #endif /* _MOUSE_X11_ */
