@@ -4,26 +4,27 @@
  * via audio jack's P2, 3.5mm connector as a simple 'mouse click'. No USB or
  * additional mouse device is needed, just the switch :)
  * 
- * Authors: Apr, 2018.
+ * Authors: Feb, 2018. Federal University of Pará (UFPA). Belém, Brazil.
  * Cassio Batista - cassio.batista.13@gmail.com
  * Erick Campos - erick.c.modesto@gmail.com
- * Federal University of Pará (UFPA). Belém, Brazil.
+ *
+ * Credits:
+ * ALSA Capture Program: Paul David (http://equalarea.com/paul/alsa-audio.html)
+ * Mouse with X11/Xlib: Enrico "Pioz" (https://gist.github.com/pioz/726474)
+ * Mouse icon X11/Xlib: Nicolas Hillegeer (https://github.com/aktau/hhpc)
  *
  */
 
-#include <signal.h>
-#include <math.h>
 #include "rec_pa.h"
 #include "mouse_x11.h"
 
-#define INIT_WINDOW_STEP 1000
-#define POWER_THRESH 1000       /* set 0 for dynamic estimation */
+#include <math.h>
+
+#define INIT_WIN_STEP 1000
+#define POWER_THRESH  1000  /* set 0 for dynamic estimation (not recommended) */
 
 #define DPLOT 0
 #define DEGUB 1
-
-#define C_FG_R   "\x1b[31m" /* red */
-#define C_RESET  "\x1b[0m"
 
 static volatile int keep_running = 1;
 
@@ -47,15 +48,13 @@ main(void)
 	long avg_power = 0;  /* average power of the signal */
 
 	/* simulate a queue of size 3 */
-	/*       0     1     2        */
 	/*    .-----.-----.-----.     */
-	/* ->       |     |       ->  */
+	/* ->    0  |  1  |  2    ->  */
 	/*    '-----'-----'-----'     */
-	/*      last       first      */
-	/*       in         in        */
-	/* initialize queue with non valid frame index values */
+	/*  last in        first in   */
 	unsigned long fifo[3]; 
 	for(i=0; i<3; i++)
+		/* initialize queue with non valid frame index values */
 		fifo[i] = -1;
 
 	/* open X display */
@@ -65,15 +64,15 @@ main(void)
 		return EXIT_FAILURE;
 	}
 
+	/* open X window */
 	Window rootxwin = RootWindow(disp, DefaultScreen(disp));
 
-	/* handling control c */
+	/* handling ctrl+c */
 	signal(SIGINT, sigint_handler);
 
-	/* create the portaudio "object" */
-	if((err = Pa_Create(&stream, err, &data)) != paNoError) {
+	/* create the PortAudio "object" */
+	if((err = Pa_Create(&stream, err, &data)) != paNoError)
 		return Pa_Destroy(err, &data, "create pa structures");
-	}
 
 	/* update frame indexes on queue */
 	i = 2; /* TODO sizeof(fifo)/sizeof(unsigned long)?  */
@@ -127,7 +126,7 @@ main(void)
 
 			/* looking at every 1k samples from the signal 
 			 * instead of one by one can save our precious time */
-			win_step = INIT_WINDOW_STEP;
+			win_step = INIT_WIN_STEP;
 			win_count = 0;
 			for(i=fifo[2]; i<fifo[1] && keep_running; i+=win_step) {
 				if(abs(data.recordedSamples[i]) > avg_power) {
@@ -145,7 +144,7 @@ main(void)
 						x11_color_cursor(disp, rootxwin);
 						click_count++;
 						break;
-					} 
+					}
 				} else {
 					//win_count--;
 				}
@@ -163,9 +162,8 @@ main(void)
 		} /* close while */
 
 		/* init PortAudio stream */
-		if((err = Pa_Init(&stream, err, &data)) != paNoError) {
+		if((err = Pa_Init(&stream, err, &data)) != paNoError) 
 			return Pa_Destroy(err, &data, "resetting pa structures");
-		}
 	}
 
 	#if DEGUB

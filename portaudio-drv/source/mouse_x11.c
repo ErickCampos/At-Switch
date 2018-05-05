@@ -1,4 +1,5 @@
 /*
+ * JATDS - Jack AT Switch Driver
  * A minimal "driver" to make all sort of AT switches work on a desktop computer
  * via audio jack's P2, 3.5mm connector as a simple 'mouse click'. No USB or
  * additional mouse device is needed, just the switch :)
@@ -10,8 +11,7 @@
  * Credits:
  * ALSA Capture Program: Paul David (http://equalarea.com/paul/alsa-audio.html)
  * Mouse with X11/Xlib: Enrico "Pioz" (https://gist.github.com/pioz/726474)
- *
- * Source: Enrico "Pioz"'s gist (https://gist.github.com/pioz/726474)
+ * Mouse icon X11/Xlib: Nicolas Hillegeer (https://github.com/aktau/hhpc)
  *
  */
 
