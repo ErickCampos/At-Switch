@@ -146,7 +146,7 @@ main(void)
 						break;
 					}
 				} else {
-					//win_count--;
+					/* win_count--; */
 				}
 			}
 
