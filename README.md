@@ -1,4 +1,4 @@
-# Blow-based AT Switch
+# Puff-based AT Switch
 
 This repo describes the construction of a blow-based AT switch. The device can
 act as an independent trigger, and a minimal desktop *driver*, called **JATSD** 
