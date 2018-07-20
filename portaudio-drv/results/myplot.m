@@ -10,11 +10,11 @@ figure;
 a = plot(x, 'b-', 'LineWidth', 2);
 hold on;
 %grid on;
-set(gca, 'XTick', 0:250:7000  , 'FontSize', 16);
-set(gca, 'YTick', 0:1000:20000, 'FontSize', 16);
+set(gca, 'XTick', 0:250:7000  , 'FontSize', 18);
+set(gca, 'YTick', 0:1000:20000, 'FontSize', 18);
 
 plot(ones(1,length(0:5500))*1000, 'k--');
-xlim([0 5500]);
+xlim([0 5000]);
 
 chunks = [500 1000 1250 1375 1437];
 for i = chunks
@@ -37,10 +37,10 @@ l = legend([b c d],...
 	'Teste 1: sucesso, sopro',...
 	'Teste 2: falha, não-sopro',...
 	'Teste 3: recuperação do teste 2');
-set(l, 'FontSize', 18);
+set(l, 'FontSize', 24);
 
-xlabel('Amostras',  'FontSize', 24);
-ylabel('Amplitude', 'FontSize', 24);
+xlabel('Amostras',  'FontSize', 40);
+ylabel('Amplitude', 'FontSize', 40);
 
 return; % ----------------------------------------------------------------------
 
