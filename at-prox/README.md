@@ -1,11 +1,11 @@
 # Proximity-based, Wireless AT Switch
 
 ## Content (hardware schematics)
-- kicad-libs: HT12D, HT12E and Potentiometer (libraries required for Kicad)
-- ir-led:     Emitter infrared LED signal circuit (it sends a command signal to the TV)
-- tx:         Transmitter AT switch module circuit
-- rx:         Receiver AT switch module circuit
-- status-led: R/G/B LED circuit (system status)
+- __kicad-libs__: HT12D, HT12E and Potentiometer (libraries required for Kicad)
+- __ir-led__:     Emitter infrared LED signal circuit (it sends a command signal to the TV)
+- __tx__:         Transmitter AT switch module circuit
+- __rx__:         Receiver AT switch module circuit
+- __status-led__: R/G/B LED circuit (system status)
 
 All circuits were built on the KiCad software
 
