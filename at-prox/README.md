@@ -10,15 +10,14 @@
 All circuits were built on the KiCad software
 
 ## Copyright
-January, 2017
-
-FalaBrasil Group ([GitHub's page](https://github.com/falabrasil))
-Laboratory of Visualization, Interaction and Intelligent Systems ([LabVIS](http://labvis.ufpa.br/))
-Federal University of Pará ([UFPA](https://portal.ufpa.br/))
+January, 2017         
+FalaBrasil Group ([GitHub's page](https://github.com/falabrasil))            
+Laboratory of Visualization, Interaction and Intelligent Systems ([LabVIS](http://labvis.ufpa.br/))           
+Federal University of Pará ([UFPA](https://portal.ufpa.br/))             
 
 ## Authors
-Erick Modesto Campos    ([github](https://github.com/ErickCampos/)|[email](mailto:erick.c.modesto@gmail.com))
-Cassio Trindade Batista ([github](https://github.com/cassiobatista/)|[email](cassio.batista.13@gmail.com))
+Erick Modesto Campos    ([github](https://github.com/ErickCampos/)|[email](mailto:erick.c.modesto@gmail.com))        
+Cassio Trindade Batista ([github](https://github.com/cassiobatista/)|[email](cassio.batista.13@gmail.com))        
 
 ## Reference
 
