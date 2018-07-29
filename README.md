@@ -16,7 +16,7 @@ sudo apt-get install kicad libx11-dev libasound2-dev libportaudio-dev portaudio1
 
 ## Copyright
 2017-2018      
-FalaBrasil Group ([GitHub's page](https://github.com/falabrasil))        
+FalaBrasil Group ([github](https://github.com/falabrasil)|[webpage](http://labvis.ufpa.br/falabrasil/))        
 Laboratory of Visualization, Interaction and Intelligent Systems ([LabVIS](http://labvis.ufpa.br/))       
 Federal University of Pará ([UFPA](https://portal.ufpa.br/))
 
