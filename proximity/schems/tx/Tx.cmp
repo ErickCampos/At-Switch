@@ -1,0 +1,87 @@
+Cmp-Mod V01 Created by CvPcb (22-Jun-2014 BZR 4027)-stable date = Seg 01 Mai 2017 17:31:55 -03
+
+BeginCmp
+TimeStamp = /59077B7B;
+Reference = Alimentação1;
+ValeurCmp = BARREL_JACK;
+IdModule  = BARREL_JACK;
+EndCmp
+
+BeginCmp
+TimeStamp = /590773E5;
+Reference = D1;
+ValeurCmp = LED Emissor;
+IdModule  = LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /590773F4;
+Reference = D2;
+ValeurCmp = LED Receptor;
+IdModule  = LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /590776BD;
+Reference = D3;
+ValeurCmp = LED Status;
+IdModule  = LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /590772DD;
+Reference = HT1;
+ValeurCmp = HT12E;
+IdModule  = DIP-18__300;
+EndCmp
+
+BeginCmp
+TimeStamp = /5907762D;
+Reference = POT1;
+ValeurCmp = 10K;
+IdModule  = POT-HG;
+EndCmp
+
+BeginCmp
+TimeStamp = /590772EC;
+Reference = R1;
+ValeurCmp = 750k;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /590774C1;
+Reference = R2;
+ValeurCmp = 10K;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /590776AE;
+Reference = R3;
+ValeurCmp = 220;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /590774DF;
+Reference = R4;
+ValeurCmp = 220;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /590779D9;
+Reference = RF1;
+ValeurCmp = Tx;
+IdModule  = PIN_ARRAY_3X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /59077430;
+Reference = U1;
+ValeurCmp = LM358;
+IdModule  = DIP-8__300;
+EndCmp
+
+EndListe

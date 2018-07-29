@@ -1,0 +1,45 @@
+Cmp-Mod V01 Created by CvPcb (2013-jul-07)-stable date = Qua 03 Mai 2017 13:15:04 BRT
+
+BeginCmp
+TimeStamp = /5909F77F;
+Reference = D1;
+ValeurCmp = LED Status;
+IdModule  = LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /5909F402;
+Reference = Decoder1;
+ValeurCmp = HT12D;
+IdModule  = DIP-18__300;
+EndCmp
+
+BeginCmp
+TimeStamp = /590A019B;
+Reference = K1;
+ValeurCmp = CONN_3;
+IdModule  = PIN_ARRAY_3X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /5909F4B8;
+Reference = R1;
+ValeurCmp = 50k;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /5909F7CA;
+Reference = R2;
+ValeurCmp = 220;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /5909F4A7;
+Reference = RF1;
+ValeurCmp = RX;
+IdModule  = PIN_ARRAY_4x1;
+EndCmp
+
+EndListe

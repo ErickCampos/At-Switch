@@ -1,0 +1,52 @@
+Cmp-Mod V01 Created by CvPcb (2013-jul-07)-stable date = Qui 18 Mai 2017 10:19:23 BRT
+
+BeginCmp
+TimeStamp = /591D9B9A;
+Reference = D1;
+ValeurCmp = LED;
+IdModule  = LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /591D9BA9;
+Reference = D2;
+ValeurCmp = LED;
+IdModule  = LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /591D9BB8;
+Reference = D3;
+ValeurCmp = LED;
+IdModule  = LED-5MM;
+EndCmp
+
+BeginCmp
+TimeStamp = /591D9CB8;
+Reference = P1;
+ValeurCmp = CONN_4;
+IdModule  = PIN_ARRAY_4x1;
+EndCmp
+
+BeginCmp
+TimeStamp = /591D9BC7;
+Reference = R1;
+ValeurCmp = R;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /591D9BD4;
+Reference = R2;
+ValeurCmp = R;
+IdModule  = R4;
+EndCmp
+
+BeginCmp
+TimeStamp = /591D9C66;
+Reference = R3;
+ValeurCmp = R;
+IdModule  = R4;
+EndCmp
+
+EndListe

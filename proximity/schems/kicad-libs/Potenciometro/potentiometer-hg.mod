@@ -1,0 +1,41 @@
+PCBNEW-LibModule-V1  Seg 01 Mai 2017 17:07:28 -03
+# encoding utf-8
+Units mm
+$INDEX
+POT-HG
+$EndINDEX
+$MODULE POT-HG
+Po 0 0 0 15 59079537 00000000 ~~
+Li POT-HG
+Sc 0
+AR 
+Op 0 0 0
+T0 5.08 -3.81 1 1 0 0.15 N V 21 N "POT-HG"
+T1 5.08 -2.54 1 1 0 0.15 N V 21 N "VAL**"
+DS -2.54 -2.54 -2.54 2.54 0.15 21
+DS -2.54 2.54 12.7 2.54 0.15 21
+DS 12.7 2.54 12.7 -2.54 0.15 21
+DS 12.7 -2.54 -2.54 -2.54 0.15 21
+$PAD
+Sh "1" C 1.5 1.5 0 0 0
+Dr 0.6 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 0 0
+$EndPAD
+$PAD
+Sh "2" C 1.5 1.5 0 0 0
+Dr 0.6 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 5.08 0
+$EndPAD
+$PAD
+Sh "3" C 1.5 1.5 0 0 0
+Dr 0.6 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 10.16 0
+$EndPAD
+$EndMODULE POT-HG
+$EndLIBRARY

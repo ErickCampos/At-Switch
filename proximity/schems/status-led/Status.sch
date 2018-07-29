@@ -1,0 +1,160 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+EELAYER 27 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date "18 may 2017"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L LED D1
+U 1 1 591D9B9A
+P 3750 2400
+F 0 "D1" H 3750 2500 50  0000 C CNN
+F 1 "LED" H 3750 2300 50  0000 C CNN
+F 2 "~" H 3750 2400 60  0000 C CNN
+F 3 "~" H 3750 2400 60  0000 C CNN
+	1    3750 2400
+	-1   0    0    1   
+$EndComp
+$Comp
+L LED D2
+U 1 1 591D9BA9
+P 3750 2050
+F 0 "D2" H 3750 2150 50  0000 C CNN
+F 1 "LED" H 3750 1950 50  0000 C CNN
+F 2 "~" H 3750 2050 60  0000 C CNN
+F 3 "~" H 3750 2050 60  0000 C CNN
+	1    3750 2050
+	-1   0    0    1   
+$EndComp
+$Comp
+L LED D3
+U 1 1 591D9BB8
+P 3750 1700
+F 0 "D3" H 3750 1800 50  0000 C CNN
+F 1 "LED" H 3750 1600 50  0000 C CNN
+F 2 "~" H 3750 1700 60  0000 C CNN
+F 3 "~" H 3750 1700 60  0000 C CNN
+	1    3750 1700
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R1
+U 1 1 591D9BC7
+P 3100 1700
+F 0 "R1" V 3180 1700 40  0000 C CNN
+F 1 "R" V 3107 1701 40  0000 C CNN
+F 2 "~" V 3030 1700 30  0000 C CNN
+F 3 "~" H 3100 1700 30  0000 C CNN
+	1    3100 1700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R2
+U 1 1 591D9BD4
+P 3100 2050
+F 0 "R2" V 3180 2050 40  0000 C CNN
+F 1 "R" V 3107 2051 40  0000 C CNN
+F 2 "~" V 3030 2050 30  0000 C CNN
+F 3 "~" H 3100 2050 30  0000 C CNN
+	1    3100 2050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R3
+U 1 1 591D9C66
+P 3100 2400
+F 0 "R3" V 3180 2400 40  0000 C CNN
+F 1 "R" V 3107 2401 40  0000 C CNN
+F 2 "~" V 3030 2400 30  0000 C CNN
+F 3 "~" H 3100 2400 30  0000 C CNN
+	1    3100 2400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L CONN_4 P1
+U 1 1 591D9CB8
+P 2000 2000
+F 0 "P1" V 1950 2000 50  0000 C CNN
+F 1 "CONN_4" V 2050 2000 50  0000 C CNN
+F 2 "" H 2000 2000 60  0000 C CNN
+F 3 "" H 2000 2000 60  0000 C CNN
+	1    2000 2000
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3350 1700 3550 1700
+Wire Wire Line
+	3350 2050 3550 2050
+Wire Wire Line
+	3350 2400 3550 2400
+Wire Wire Line
+	3950 1700 4100 1700
+Wire Wire Line
+	4100 1700 4100 2400
+Wire Wire Line
+	3950 2050 4250 2050
+Wire Wire Line
+	4100 2400 3950 2400
+Connection ~ 4100 2050
+Wire Wire Line
+	2350 1950 2750 1950
+Wire Wire Line
+	2750 1950 2750 1700
+Wire Wire Line
+	2750 1700 2850 1700
+Wire Wire Line
+	2350 2050 2850 2050
+Wire Wire Line
+	2350 2150 2750 2150
+Wire Wire Line
+	2750 2150 2750 2400
+Wire Wire Line
+	2750 2400 2850 2400
+Wire Wire Line
+	2350 1850 2650 1850
+Wire Wire Line
+	2650 1850 2650 1500
+Wire Wire Line
+	2650 1500 4250 1500
+Wire Wire Line
+	4250 1500 4250 2050
+$EndSCHEMATC
